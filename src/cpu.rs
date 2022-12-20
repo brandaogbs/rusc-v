@@ -43,19 +43,19 @@ impl Cpu {
         let b = |s:u32, e:u32| (inst >> e) & ((1<<(s-e+1))-1);
 
         // 2. Decode
-        let opcode = inst & 0x7f;
-        let rd = ((inst >> 7) & 0x1f) as usize;
-        let rs1 = ((inst >> 15) & 0x1f) as usize;
-        let rs2 = ((inst >> 20) & 0x1f) as usize;
-        let funct3 = (inst >> 12) & 0x7;
-        let funct7 = (inst >> 25) & 0x7f;
+        let opcode = b(6, 0);
+        let rd = b(11, 7) as usize;
+        let rs1 = b(19, 15) as usize;
+        let rs2 = b(24, 20) as usize;
+        let funct3 = b(14, 12);
+        let funct7 = b(31, 25);
 
         // imm[20|10:1|11|19:12] = inst[31|30:21|20|19:12]
         let imm_j = sing_extend((
             (b(32, 31) << 20)
             | (b(30, 21) << 1)
             | (b(20, 20) << 11)
-            | (b(19,12) << 12)) as i32, 21) as u64;
+            | (b(19,12) << 12)) as i32, 21) as u32 as u64;
         
         // imm[12|10:5|4:1|11] = inst[31|30:25|11:8|7]
         let imm_b = sing_extend((
@@ -65,28 +65,26 @@ impl Cpu {
             | (b(7,7) << 11)) as i32, 13) as u64;
 
         // imm[11:0] = inst[31:20]
-        let imm_i = sing_extend(b(31, 20) as i32, 12) as u64;
+        let imm_i = sing_extend(b(31, 20) as i32, 12) as u32 as u64;
 
         // imm[20:0] = inst[31:12]
-        let imm_u = b(31, 12);
+        let imm_u =  b(31, 12) as u32 as u64;
 
         println!("pc:{:#x} opcode:{:#x} funct3:{:#x} funct7:{:#x} ", self.pc.wrapping_sub(4), opcode, funct3, funct7);
         println!("reg[rd]:{:#x} reg[rs1]:{:#x} reg[rs2]:{:#x} ", self.regs[rd], self.regs[rs1], self.regs[rs2]);
         println!("imm_i:{:#x} imm_b:{:#x} imm_u:{:#x} imm_j:{:#x} ", imm_i, imm_b, imm_u, imm_j);
         self.regs[0] = 0;
 
+        // http://pages.hmc.edu/harris/ddca/ddcarv/DDCArv_AppB_Harris.pdf
         match opcode {
-            0x13 => { // ADDI
+            0x13 => { // I-type
                 match funct3 {
-                    0x0 => {
-                        self.regs[rd] = self.regs[rs1].wrapping_add(imm_i);
+                    0x0 => { // ADDI
+                        self.regs[rd] = self.regs[rs1].wrapping_add(imm_i) as u32 as u64;
                     },
-                    0x1 => {
+                    0x1 => { // SLLI
                         let shamt = self.regs[rs2];
                         self.regs[rd] = self.regs[rs1].wrapping_add(imm_i<<shamt);
-                    },
-                    0x6 => {
-
                     },
                     _ => {
                         println!("not implemented yet: opcode {:#x} funct3 {:#x}", opcode, funct3);
@@ -95,7 +93,7 @@ impl Cpu {
                 }
                 return Ok(());
             },
-            0x17 => {
+            0x17 => { // LUI
                 self.regs[rd] = self.pc.wrapping_add(imm_i).wrapping_sub(4);
                 return Ok(())
             },
@@ -112,8 +110,16 @@ impl Cpu {
                 }
                 return Ok(())
             },
-            0x33 => { // ADD
-                self.regs[rd] = self.regs[rs1].wrapping_add(self.regs[rs2]);
+            0x33 => { // R-type
+                match (funct3, funct7) {
+                    (0x0, 0x00) => { // ADD
+                        self.regs[rd] = self.regs[rs1].wrapping_add(self.regs[rs2]) as u32 as u64;
+                    },
+                    _ => {
+                        println!("not implemented yet: opcode {:#x} funct3 {:#x} funct7 {:#x}", opcode, funct3, funct7);
+                        return Err(());  
+                    }
+                }
                 return Ok(())
             },
             0x37 => { // LUI

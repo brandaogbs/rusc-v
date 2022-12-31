@@ -86,6 +86,9 @@ impl Cpu {
                         let shamt = self.regs[rs2];
                         self.regs[rd] = self.regs[rs1].wrapping_add(imm_i<<shamt);
                     },
+                    0x7 => { // ANDI
+                        self.regs[rd] = (self.regs[rs1] & imm_i) as u32 as u64;
+                    },
                     _ => {
                         println!("not implemented yet: opcode {:#x} funct3 {:#x}", opcode, funct3);
                         return Err(());                    

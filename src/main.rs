@@ -10,7 +10,7 @@ use crate::cpu::*;
 
 fn main() -> Result<()> {
     let mut code = Vec::new();
-    let file_name = "../../riscv/riscv-tests/isa/rv32ui-p-add";
+    let file_name = "../../riscv/riscv-tests/isa/rv32ui-p-andi";
     let mut f = File::open(file_name).expect("Failed to open file");
     let mut buffer = Vec::new();
     f.read_to_end(&mut buffer).expect("Failed to read file");

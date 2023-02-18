@@ -124,6 +124,10 @@ impl Cpu {
                     (0x0, 0x20) => { // SUB
                         self.regs[rd] = self.regs[rs1].wrapping_sub(self.regs[rs2]) as u32 as u64;
                     },
+                    (0x1, 0x00) => { // SLL
+                        let shamt = (self.regs[rs2] & 0x3f as u64) as u32;
+                        self.regs[rd] = self.regs[rs1].wrapping_shl(shamt) as u32 as u64;
+                    } 
                     (0x7, 0x00) => { // AND
                         self.regs[rd] = self.regs[rs1] & self.regs[rs2] as u32 as u64;
                     },

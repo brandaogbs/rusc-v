@@ -86,6 +86,9 @@ impl Cpu {
                         let shamt = self.regs[rs2];
                         self.regs[rd] = self.regs[rs1].wrapping_add(imm_i<<shamt);
                     },
+                    0x6 => { // ORI
+                         self.regs[rd] = self.regs[rs1] | imm_i;
+                    },
                     0x7 => { // ANDI
                         self.regs[rd] = (self.regs[rs1] & imm_i) as u32 as u64;
                     },
@@ -96,8 +99,8 @@ impl Cpu {
                 }
                 return Ok(());
             },
-            0x17 => { // LUI
-                self.regs[rd] = self.pc.wrapping_add(imm_i).wrapping_sub(4);
+            0x17 => { // AUIPC
+                self.regs[rd] = self.pc.wrapping_add(imm_j).wrapping_sub(4);
                 return Ok(())
             },
             0x1b => { // I
@@ -118,6 +121,9 @@ impl Cpu {
                     (0x0, 0x00) => { // ADD
                         self.regs[rd] = self.regs[rs1].wrapping_add(self.regs[rs2]) as u32 as u64;
                     },
+                    (0x0, 0x20) => { // SUB
+                        self.regs[rd] = self.regs[rs1].wrapping_sub(self.regs[rs2]) as u32 as u64;
+                    },
                     (0x7, 0x00) => { // AND
                         self.regs[rd] = self.regs[rs1] & self.regs[rs2] as u32 as u64;
                     },
@@ -133,7 +139,8 @@ impl Cpu {
                 return Ok(())
             },
             0x6f => { // JAL
-                self.regs[rd] = self.pc.wrapping_add(4);
+                //self.regs[rd] = self.pc.wrapping_add(4);
+                self.regs[rd] = self.pc.wrapping_add(0);
                 self.pc = self.pc.wrapping_add(imm_j).wrapping_sub(4);
                 return Ok(())
             },

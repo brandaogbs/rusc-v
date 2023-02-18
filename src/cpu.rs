@@ -127,6 +127,9 @@ impl Cpu {
                     (0x7, 0x00) => { // AND
                         self.regs[rd] = self.regs[rs1] & self.regs[rs2] as u32 as u64;
                     },
+                    (0x6, 0x00) => { // OR
+                        self.regs[rd] = self.regs[rs1] | self.regs[rs2] as u32 as u64;
+                    },
                     _ => {
                         println!("not implemented yet: opcode {:#x} funct3 {:#x} funct7 {:#x}", opcode, funct3, funct7);
                         return Err(());  

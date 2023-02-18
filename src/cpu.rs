@@ -168,6 +168,11 @@ impl Cpu {
                             self.pc = self.pc.wrapping_add(imm_b).wrapping_sub(4);
                         }
                     }
+                    0x7 => { // BGEU
+                        if self.regs[rs1] >= self.regs[rs2] {
+                            self.pc = self.pc.wrapping_add(imm_b).wrapping_sub(4);
+                        }
+                    }
                     _ => {
                         println!("not implemented yet: opcode {:#x} funct3 {:#x}", opcode, funct3);
                         return Err(());                    

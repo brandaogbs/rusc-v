@@ -83,8 +83,8 @@ impl Cpu {
                         self.regs[rd] = self.regs[rs1].wrapping_add(imm_i) as u32 as u64;
                     },
                     0x1 => { // SLLI
-                        let shamt = self.regs[rs2];
-                        self.regs[rd] = self.regs[rs1].wrapping_add(imm_i<<shamt);
+                        let shamt = (imm_i & 0x3f) as u32;
+                        self.regs[rd] = self.regs[rs1].wrapping_shl(shamt) as u32 as u64;
                     },
                     0x6 => { // ORI
                          self.regs[rd] = self.regs[rs1] | imm_i;

@@ -159,7 +159,7 @@ impl Cpu {
                         }
                     },
                     0x4 => { // BLE
-                        if (self.regs[rs1] as i64) < (self.regs[rs2] as i64) {
+                        if (self.regs[rs1] as i32 as i64) < (self.regs[rs2] as i32 as i64) {
                             self.pc = self.pc.wrapping_add(imm_b).wrapping_sub(4);
                         }
                     },

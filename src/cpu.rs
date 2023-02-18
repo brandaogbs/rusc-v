@@ -86,6 +86,9 @@ impl Cpu {
                         let shamt = (imm_i & 0x3f) as u32;
                         self.regs[rd] = self.regs[rs1].wrapping_shl(shamt) as u32 as u64;
                     },
+                    0x2 => { // SLTI
+                        self.regs[rd] = if (self.regs[rs1] as i32 as i64) < (imm_i as i32 as i64) {1} else {0};
+                    },
                     0x6 => { // ORI
                          self.regs[rd] = self.regs[rs1] | imm_i;
                     },

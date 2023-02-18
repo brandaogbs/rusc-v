@@ -158,7 +158,7 @@ impl Cpu {
                             self.pc = self.pc.wrapping_add(imm_b).wrapping_sub(4);
                         }
                     },
-                    0x4 => { // BLE
+                    0x4 => { // BLT
                         if (self.regs[rs1] as i32 as i64) < (self.regs[rs2] as i32 as i64) {
                             self.pc = self.pc.wrapping_add(imm_b).wrapping_sub(4);
                         }
@@ -167,7 +167,12 @@ impl Cpu {
                         if (self.regs[rs1] as i32 as i64) >= (self.regs[rs2] as i32 as i64) {
                             self.pc = self.pc.wrapping_add(imm_b).wrapping_sub(4);
                         }
-                    }
+                    },
+                    0x6 => { // BLTU
+                        if self.regs[rs1] < self.regs[rs2] {
+                            self.pc = self.pc.wrapping_add(imm_b).wrapping_sub(4);
+                        }
+                    },
                     0x7 => { // BGEU
                         if self.regs[rs1] >= self.regs[rs2] {
                             self.pc = self.pc.wrapping_add(imm_b).wrapping_sub(4);

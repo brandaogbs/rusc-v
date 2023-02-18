@@ -155,6 +155,9 @@ impl Cpu {
                     (0x3, 0x00) => { // SLTU
                         self.regs[rd] = if self.regs[rs1] < self.regs[rs2] { 1 } else { 0 };
                     } ,
+                    (0x4, 0x00) => { // XOR
+                        self.regs[rd] = self.regs[rs1] ^ self.regs[rs2] as u32 as u64;
+                    } ,
                     (0x5, 0x00) => { // SRA
                         let shamt = (self.regs[rs2] & 0x3f as u64) as u32;
                         self.regs[rd] = self.regs[rs1].wrapping_shr(shamt) as u32 as u64;

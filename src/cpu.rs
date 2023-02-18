@@ -140,6 +140,10 @@ impl Cpu {
                     (0x3, 0x00) => { // SLTU
                         self.regs[rd] = if self.regs[rs1] < self.regs[rs2] { 1 } else { 0 };
                     } ,
+                    (0x5, 0x20) => { // SRA
+                        let shamt = (self.regs[rs2] & 0x3f as u64) as u32;
+                        self.regs[rd] = (self.regs[rs1] as i32 as i64).wrapping_shr(shamt) as u32 as u64;
+                    } ,
                     (0x7, 0x00) => { // AND
                         self.regs[rd] = self.regs[rs1] & self.regs[rs2] as u32 as u64;
                     },

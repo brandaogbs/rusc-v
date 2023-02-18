@@ -127,7 +127,10 @@ impl Cpu {
                     (0x1, 0x00) => { // SLL
                         let shamt = (self.regs[rs2] & 0x3f as u64) as u32;
                         self.regs[rd] = self.regs[rs1].wrapping_shl(shamt) as u32 as u64;
-                    } 
+                    } ,
+                    (0x2, 0x00) => { // SLT
+                        self.regs[rd] = if (self.regs[rs1] as i32 as i64) < (self.regs[rs2] as i32 as i64) { 1 } else { 0 };
+                    } ,
                     (0x7, 0x00) => { // AND
                         self.regs[rd] = self.regs[rs1] & self.regs[rs2] as u32 as u64;
                     },

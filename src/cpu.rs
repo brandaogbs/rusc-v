@@ -90,11 +90,22 @@ impl Cpu {
                         self.regs[rd] = if (self.regs[rs1] as i32 as i64) < (imm_i as i32 as i64) {1} else {0};
                     },
                     0x3 => { // SLTIU
+                        if funct7 == 0x00 {
+
+                        }
                         self.regs[rd] = if self.regs[rs1] < imm_i {1} else {0};
                     },
-                    0x5 => { // SRAI
+                    0x5 => { // SR
                         let shamt = (imm_i & 0x3f) as u32;
-                        self.regs[rd] = (self.regs[rs1] as i32 as i64).wrapping_shr(shamt) as u32 as u64;
+                        match funct7 {
+                            0x00 => { // SRLI
+                                self.regs[rd] = self.regs[rs1].wrapping_shr(shamt) as u32 as u64;
+                            },
+                            0x20 => { // SRAI
+                                self.regs[rd] = (self.regs[rs1] as i32 as i64).wrapping_shr(shamt) as u32 as u64;
+                            },
+                            _ => {}
+                        }
                     },
                     0x6 => { // ORI
                          self.regs[rd] = self.regs[rs1] | imm_i;
@@ -144,7 +155,7 @@ impl Cpu {
                     (0x3, 0x00) => { // SLTU
                         self.regs[rd] = if self.regs[rs1] < self.regs[rs2] { 1 } else { 0 };
                     } ,
-                    (0x5, 0x00) => { // SRL
+                    (0x5, 0x00) => { // SRA
                         let shamt = (self.regs[rs2] & 0x3f as u64) as u32;
                         self.regs[rd] = self.regs[rs1].wrapping_shr(shamt) as u32 as u64;
                     } ,

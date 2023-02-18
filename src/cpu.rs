@@ -90,10 +90,10 @@ impl Cpu {
                         self.regs[rd] = if (self.regs[rs1] as i32 as i64) < (imm_i as i32 as i64) {1} else {0};
                     },
                     0x3 => { // SLTIU
-                        if funct7 == 0x00 {
-
-                        }
                         self.regs[rd] = if self.regs[rs1] < imm_i {1} else {0};
+                    },
+                    0x4 => { // XORI
+                        self.regs[rd] = self.regs[rs1] ^ imm_i as u32 as u64;
                     },
                     0x5 => { // SR
                         let shamt = (imm_i & 0x3f) as u32;

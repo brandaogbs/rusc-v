@@ -185,6 +185,12 @@ impl Cpu {
                 }
                 return Ok(())
             },
+            0x67 => {
+                let pc = self.pc;
+                self.pc = self.regs[rs1].wrapping_add(imm_i) as u32 as u64;
+                self.regs[rd] = pc;
+                return Ok(())
+            },
             0xf => { // FENCE
                 return Ok(())
             },

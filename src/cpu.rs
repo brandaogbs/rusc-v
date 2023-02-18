@@ -139,8 +139,7 @@ impl Cpu {
                 return Ok(())
             },
             0x6f => { // JAL
-                //self.regs[rd] = self.pc.wrapping_add(4);
-                self.regs[rd] = self.pc.wrapping_add(0);
+                self.regs[rd] = self.pc.wrapping_add(4);
                 self.pc = self.pc.wrapping_add(imm_j).wrapping_sub(4);
                 return Ok(())
             },
@@ -165,7 +164,7 @@ impl Cpu {
                         }
                     },
                     0x5 => { // BGE
-                        if (self.regs[rs1] as i64) >= (self.regs[rs2] as i64) {
+                        if (self.regs[rs1] as i32 as i64) >= (self.regs[rs2] as i32 as i64) {
                             self.pc = self.pc.wrapping_add(imm_b).wrapping_sub(4);
                         }
                     }

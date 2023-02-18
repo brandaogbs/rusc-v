@@ -89,6 +89,9 @@ impl Cpu {
                     0x2 => { // SLTI
                         self.regs[rd] = if (self.regs[rs1] as i32 as i64) < (imm_i as i32 as i64) {1} else {0};
                     },
+                    0x3 => { // SLTIU
+                        self.regs[rd] = if self.regs[rs1] < imm_i {1} else {0};
+                    },
                     0x6 => { // ORI
                          self.regs[rd] = self.regs[rs1] | imm_i;
                     },

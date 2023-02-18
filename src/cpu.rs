@@ -92,6 +92,10 @@ impl Cpu {
                     0x3 => { // SLTIU
                         self.regs[rd] = if self.regs[rs1] < imm_i {1} else {0};
                     },
+                    0x5 => { // SRAI
+                        let shamt = (imm_i & 0x3f) as u32;
+                        self.regs[rd] = (self.regs[rs1] as i32 as i64).wrapping_shr(shamt) as u32 as u64;
+                    },
                     0x6 => { // ORI
                          self.regs[rd] = self.regs[rs1] | imm_i;
                     },

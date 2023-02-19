@@ -70,6 +70,9 @@ impl Cpu {
         // imm[20:0] = inst[31:12]
         let imm_u =  b(31, 12) as u32;
 
+        // imm[11:5|4:0] = inst[31:25|11:7]
+        let imm_s = sing_extend((b(31, 25) << 5 | b(11, 7)) as i32, 12) as i32 as u32;
+
         println!("pc:{:#x} opcode:{:#x} funct3:{:#x} funct7:{:#x} ", self.pc.wrapping_sub(4), opcode, funct3, funct7);
         println!("reg[rd]:{:#x} reg[rs1]:{:#x} reg[rs2]:{:#x} ", self.regs[rd], self.regs[rs1], self.regs[rs2]);
         println!("imm_i:{:#x} imm_b:{:#x} imm_u:{:#x} imm_j:{:#x} ", imm_i, imm_b, imm_u, imm_j);
@@ -165,11 +168,13 @@ impl Cpu {
                 return Ok(())
             },
             0x23 => { // STORE
-                let imm_s = sing_extend((b(31, 25) << 5 | b(11, 7)) as i32, 12) as i32 as u32;
                 let addr = self.regs[rs1].wrapping_add(imm_s);
                 match funct3 {
                     0x0 => { // SB
                         self.store(addr, 8, self.regs[rs2])?;
+                    },
+                    0x1 => { // SH
+                        self.store(addr, 16, self.regs[rs2])?;
                     },
                     _ => {
                         println!("not implemented yet: opcode {:#x} funct3 {:#x}", opcode, funct3);

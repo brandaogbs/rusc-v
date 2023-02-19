@@ -12,7 +12,7 @@ use crate::dram::DRAM_BASE;
 fn main() -> Result<()> {
     let mut code = vec![0; DRAM_SIZE as usize];
     // TODO: loop over the programs
-    let file_name = "riscv-tests/isa/rv32ui-p-sb";
+    let file_name = "riscv-tests/isa/rv32ui-p-sh";
     let mut f = File::open(file_name).expect("Failed to open file");
     let mut buffer = Vec::new();
     f.read_to_end(&mut buffer).expect("Failed to read file");

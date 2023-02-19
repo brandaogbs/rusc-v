@@ -176,6 +176,9 @@ impl Cpu {
                     0x1 => { // SH
                         self.store(addr, 16, self.regs[rs2])?;
                     },
+                    0x2 => { // SW
+                        self.store(addr, 32, self.regs[rs2])?;
+                    },
                     _ => {
                         println!("not implemented yet: opcode {:#x} funct3 {:#x}", opcode, funct3);
                         return Err(());                    

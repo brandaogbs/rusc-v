@@ -164,6 +164,20 @@ impl Cpu {
                 }
                 return Ok(())
             },
+            0x23 => { // STORE
+                let imm_s = sing_extend((b(31, 25) << 5 | b(11, 7)) as i32, 12) as i32 as u32;
+                let addr = self.regs[rs1].wrapping_add(imm_s);
+                match funct3 {
+                    0x0 => { // SB
+                        self.store(addr, 8, self.regs[rs2])?;
+                    },
+                    _ => {
+                        println!("not implemented yet: opcode {:#x} funct3 {:#x}", opcode, funct3);
+                        return Err(());                    
+                    }
+                }
+                return Ok(())
+            },
             0x33 => { // R-type
                 match (funct3, funct7) {
                     (0x0, 0x00) => { // ADD

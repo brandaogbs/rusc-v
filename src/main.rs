@@ -7,11 +7,12 @@ use std::fs::File;
 use std::io::{Read, Result};
 
 use crate::cpu::*;
+use crate::dram::DRAM_BASE;
 
 fn main() -> Result<()> {
-    let mut code = Vec::new();
+    let mut code = vec![0; DRAM_SIZE as usize];
     // TODO: loop over the programs
-    let file_name = "../../riscv/riscv-tests/isa/rv32ui-p-xori";
+    let file_name = "riscv-tests/isa/rv32ui-p-jalr";
     let mut f = File::open(file_name).expect("Failed to open file");
     let mut buffer = Vec::new();
     f.read_to_end(&mut buffer).expect("Failed to read file");
@@ -20,7 +21,11 @@ fn main() -> Result<()> {
 
     for ph in file.program_headers {
         if ph.p_type == goblin::elf::program_header::PT_LOAD {
-            code.extend(&buffer[ph.p_offset as usize..(ph.p_offset + ph.p_filesz) as usize].to_vec());
+            let data = &buffer[ph.p_offset as usize..(ph.p_offset + ph.p_filesz) as usize];
+
+            let start = ph.p_paddr-DRAM_BASE as u64;
+            let stop= start+ph.p_filesz;
+            code[start as usize..stop as usize].copy_from_slice(&data);
         }
     }    
     

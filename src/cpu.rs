@@ -132,7 +132,7 @@ impl Cpu {
                 return Ok(());
             },
             0x17 => { // AUIPC
-                self.regs[rd] = self.pc.wrapping_add(imm_u << 12);
+                self.regs[rd] = self.pc.wrapping_add(imm_u << 12).wrapping_sub(4);
                 return Ok(())
             },
             0x1b => { // I
@@ -235,13 +235,15 @@ impl Cpu {
             },
             0x67 => { // JALR
                 let pc = self.pc;
+
                 self.pc = self.regs[rs1].wrapping_add(imm_i) as u32;
                 self.regs[rd] = pc;
                 return Ok(())
             },
             0x6f => { // JAL
-                self.regs[rd] = self.pc.wrapping_add(4);
+                self.regs[rd] = self.pc;
                 self.pc = self.pc.wrapping_add(imm_j).wrapping_sub(4);
+                
                 return Ok(())
             },
             0x73 => { // SYSTEM

@@ -84,6 +84,22 @@ impl Cpu {
                         let data = self.load(addr, 8)?;
                         self.regs[rd] = data as i8 as i32 as u32;
                     },
+                    0x1 => { // LH
+                        let data = self.load(addr, 16)?;
+                        self.regs[rd] = data as i16 as i32 as u32;
+                    },
+                    0x2 => { // LW
+                        let data = self.load(addr, 32)?;
+                        self.regs[rd] = data as i32 as u32;
+                    },
+                    0x4 => { // LBU
+                        let data = self.load(addr, 8)?;
+                        self.regs[rd] = data as u8 as u32;
+                    },
+                    0x5 => { // LHU
+                        let data = self.load(addr, 16)?;
+                        self.regs[rd] = data as u16 as u32;
+                    },
                     _ => {}
                 }
                 return Ok(())
